@@ -85,3 +85,5 @@ CMakeLists.txt.user*
 
 #My
 /Xefexcel/build
+/Xefexcel/.vs
+/Xefexcel/out

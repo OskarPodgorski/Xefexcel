@@ -1,6 +1,8 @@
 cmake_minimum_required(VERSION 3.19)
 project(Xefexcel LANGUAGES CXX)
 
+list(APPEND CMAKE_PREFIX_PATH "C:/Qt/6.9.3/msvc2022_64")
+
 find_package(Qt6 6.5 REQUIRED COMPONENTS Core Widgets)
 
 qt_standard_project_setup()
