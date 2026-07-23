@@ -8,11 +8,18 @@ find_package(Qt6 6.5 REQUIRED COMPONENTS Core Widgets)
 qt_standard_project_setup()
 
 qt_add_executable(Xefexcel
-    WIN32 MACOSX_BUNDLE
+    #WIN32 MACOSX_BUNDLE
     main.cpp
     mainwindow.cpp
     mainwindow.h
     mainwindow.ui
+    fileExplorer.cpp
+    fileExplorer.h
+
+    XMLParser.cpp
+    XMLParser.h
+
+    XMLData.h
 )
 
 target_link_libraries(Xefexcel

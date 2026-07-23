@@ -6,11 +6,5 @@ class XMLParser
 {
 public:
 
-	void insertFolderPath(const std::string folderPath);
-	std::vector<XMLData> parseFolder();
-	std::vector<XMLData> analyzeFolder();
-
-private:
-
-	std::string folderPath;
+	std::vector<XMLData> parseFolder(const std::string& folderPath);
 };
