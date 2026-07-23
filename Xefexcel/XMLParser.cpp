@@ -1,16 +1,25 @@
 #include "XMLParser.h"
 
-std::vector<XMLData> XMLParser::parseFolder(
-    const std::string& folderPath)
+void XMLParser::insertFolderPath(const std::string& folderPath)
 {
-    std::vector<XMLData> results;
+	this->folderPath = folderPath;
+}
 
-    XMLData data;
-    data.invoiceNumber = "FV/1/2026";
-    data.nip = "1234567890";
-    data.sellerName = "Firma";
+std::vector<XMLData> XMLParser::parseFolder()
+{
+	std::vector<XMLData> results;
 
-    results.push_back(data);
+	XMLData data;
+	data.invoiceNumber = "FV/1/2026";
+	data.nip = "1234567890";
+	data.sellerName = "Firma";
 
-    return results;
+	results.push_back(data);
+
+	return results;
+}
+
+std::vector<XMLData> XMLParser::analyzeFolder()
+{
+	return std::vector<XMLData>();
 }
