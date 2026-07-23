@@ -17,7 +17,7 @@ MainWindow::MainWindow(QWidget* parent)
 		{
 			fileExplorer.insertFolderPath(text.toStdString());
 			ui->statusLabel->setText(text);
-			std::cout << fileExplorer.getFolderPath() << std::endl;
+			fileExplorer.analyzeFolder();
 		});
 }
 

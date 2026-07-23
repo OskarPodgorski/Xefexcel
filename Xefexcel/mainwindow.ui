@@ -70,6 +70,11 @@
             <layout class="QVBoxLayout" name="verticalLayout_3">
              <item>
               <widget class="QPushButton" name="convertButton">
+               <property name="font">
+                <font>
+                 <pointsize>16</pointsize>
+                </font>
+               </property>
                <property name="text">
                 <string>Convert</string>
                </property>
