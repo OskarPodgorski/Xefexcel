@@ -44,7 +44,29 @@
            <widget class="QWidget" name="midWidget" native="true">
             <layout class="QVBoxLayout" name="verticalLayout_2">
              <item>
-              <widget class="QLineEdit" name="urlLine"/>
+              <widget class="QWidget" name="urlWidget" native="true">
+               <layout class="QHBoxLayout" name="horizontalLayout_3">
+                <item>
+                 <widget class="QLabel" name="urlLabel">
+                  <property name="font">
+                   <font>
+                    <family>Bahnschrift SemiLight</family>
+                    <pointsize>10</pointsize>
+                   </font>
+                  </property>
+                  <property name="text">
+                   <string>Folder Path:</string>
+                  </property>
+                  <property name="alignment">
+                   <set>Qt::AlignmentFlag::AlignCenter</set>
+                  </property>
+                 </widget>
+                </item>
+                <item>
+                 <widget class="QLineEdit" name="urlLine"/>
+                </item>
+               </layout>
+              </widget>
              </item>
              <item>
               <widget class="QLabel" name="statusLabel">

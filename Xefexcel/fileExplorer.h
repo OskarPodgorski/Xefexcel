@@ -4,12 +4,14 @@
 #include <vector>
 #include <filesystem>
 #include <iostream>
+#include <optional>
+#include <cstdlib>
 
 class FileExplorer
 {
 public:
 
-	void analyzeFolder() const;
+	std::optional<size_t> analyzeFolder() const;
 	void insertFolderPath(const std::string& folderPath);
 	const std::string& getFolderPath() const;
 

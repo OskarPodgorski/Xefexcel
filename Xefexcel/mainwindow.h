@@ -4,6 +4,7 @@
 #include <QMainWindow>
 #include <iostream>
 #include "fileExplorer.h"
+#include <optional>
 
 QT_BEGIN_NAMESPACE
 namespace Ui {

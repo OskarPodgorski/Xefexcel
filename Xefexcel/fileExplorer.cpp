@@ -9,31 +9,42 @@ void FileExplorer::insertFolderPath(const std::string& folderPath)
 	this->folderPath = folderPath;
 }
 
-void FileExplorer::analyzeFolder() const
+std::optional<size_t> FileExplorer::analyzeFolder() const
 {
+	std::system("cls");
+
 	fs::path path(folderPath);
 
-    if (!fs::exists(path))
-    {
-        std::cout << "[ERROR] Folder nie istnieje: "
-            << folderPath << '\n';
-        return;
-    }
+	if (!fs::exists(path))
+	{
+		std::cout << "[ERROR] Folder nie istnieje: "
+			<< folderPath << '\n';
+		return std::nullopt;
+	}
 
-    if (!fs::is_directory(path))
-    {
-        std::cout << "[ERROR] Podana sciezka nie jest folderem: "
-            << folderPath << '\n';
-        return;
-    }
+	if (!fs::is_directory(path))
+	{
+		std::cout << "[ERROR] Podana sciezka nie jest folderem: "
+			<< folderPath << '\n';
+		return std::nullopt;
+	}
 
-    for (const fs::directory_entry& entry : fs::directory_iterator(path))
-    {
-        if (entry.is_regular_file())
-        {
-            std::cout << "[FILE] "
-                << entry.path().filename().string()
-                << '\n';
-        }
-    }
+	int xmlCount = 0;
+
+	for (const fs::directory_entry& entry : fs::directory_iterator(path))
+	{
+		if (entry.is_regular_file())
+		{
+			std::cout << "[FILE] "
+				<< entry.path().filename().string()
+				<< '\n';
+
+			if (entry.path().extension() == ".xml")
+			{
+				++xmlCount;
+			}
+		}
+	}
+
+	return xmlCount;
 }
