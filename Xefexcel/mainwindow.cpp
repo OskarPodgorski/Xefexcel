@@ -33,9 +33,20 @@ MainWindow::MainWindow(QWidget* parent)
 
 	connect(ui->convertButton, &QPushButton::clicked, this, [this]()
 		{
-			xmlParser.parseFolder(fileExplorer.getFolderPath());
+			const std::string folderPath = fileExplorer.getFolderPath();
 
-			ui->resultLabel->setText("Conversion completed!");
+			const std::vector<XMLData> invoices = xmlParser.parseFolder(folderPath);
+
+			if (invoices.empty())
+			{
+				ui->resultLabel->setText("Error. Correct invoices not found!");
+
+				return;
+			}
+
+			const bool exported = excelExporter.exportInvoices(invoices, folderPath);
+
+			ui->resultLabel->setText(exported ? "Success, created _XEFEXEL.xlsx" : "Error creating XLSX!");
 		});
 }
 

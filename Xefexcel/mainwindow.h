@@ -6,24 +6,26 @@
 #include "fileExplorer.h"
 #include <optional>
 #include "XMLParser.h"
+#include "excelExporter.h"
 
 QT_BEGIN_NAMESPACE
 namespace Ui {
-class MainWindow;
+	class MainWindow;
 }
 QT_END_NAMESPACE
 
 class MainWindow : public QMainWindow
 {
-    Q_OBJECT
+	Q_OBJECT
 
 public:
-    explicit MainWindow(QWidget *parent = nullptr);
-    ~MainWindow() override;
+	explicit MainWindow(QWidget* parent = nullptr);
+	~MainWindow() override;
 
 private:
-    Ui::MainWindow *ui;
-    FileExplorer fileExplorer;
-    XMLParser xmlParser;
+	Ui::MainWindow* ui;
+	FileExplorer fileExplorer;
+	XMLParser xmlParser;
+	ExcelExporter excelExporter;
 };
 #endif // MAINWINDOW_H

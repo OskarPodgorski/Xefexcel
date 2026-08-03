@@ -20,6 +20,9 @@ qt_add_executable(Xefexcel
     XMLParser.h
 
     XMLData.h
+
+    ExcelExporter.cpp
+    ExcelExporter.h
 )
 
 target_sources(Xefexcel PRIVATE
