@@ -10,4 +10,8 @@ class XMLParser
 public:
 
 	std::vector<XMLData> parseFolder(const std::string& folderPath);
+
+private:
+
+	void printNode(const pugi::xml_node& node, int depth) const;
 };

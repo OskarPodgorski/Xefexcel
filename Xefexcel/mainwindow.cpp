@@ -35,7 +35,7 @@ MainWindow::MainWindow(QWidget* parent)
 		{
 			xmlParser.parseFolder(fileExplorer.getFolderPath());
 
-			ui->resultLabel->setText("Konwersja zakoñczona!");
+			ui->resultLabel->setText("Conversion completed!");
 		});
 }
 
