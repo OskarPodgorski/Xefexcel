@@ -19,8 +19,21 @@ MainWindow::MainWindow(QWidget* parent)
 
 			std::optional<size_t> statusCode = fileExplorer.analyzeFolder();
 
-			ui->statusLabel->setText(statusCode == std::nullopt ? QString("Wrong folder path") : statusCode == 0 ? QString("No XML files in folder") : QString("XML files count: %1").arg(*statusCode));
-
+			if (statusCode == std::nullopt)
+			{
+				ui->statusLabel->setText(QString("Wrong folder path"));
+				ui->convertButton->setEnabled(false);
+			}
+			else if (statusCode == 0)
+			{
+				ui->statusLabel->setText(QString("No XML files in folder"));
+				ui->convertButton->setEnabled(false);
+			}
+			else
+			{
+				ui->statusLabel->setText(QString("XML files count: %1").arg(*statusCode));
+				ui->convertButton->setEnabled(true);
+			}
 		});
 }
 
