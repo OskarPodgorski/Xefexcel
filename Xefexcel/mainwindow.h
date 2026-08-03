@@ -5,6 +5,7 @@
 #include <iostream>
 #include "fileExplorer.h"
 #include <optional>
+#include "XMLParser.h"
 
 QT_BEGIN_NAMESPACE
 namespace Ui {
@@ -23,5 +24,6 @@ public:
 private:
     Ui::MainWindow *ui;
     FileExplorer fileExplorer;
+    XMLParser xmlParser;
 };
 #endif // MAINWINDOW_H

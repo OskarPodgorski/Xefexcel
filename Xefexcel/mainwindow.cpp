@@ -7,11 +7,6 @@ MainWindow::MainWindow(QWidget* parent)
 {
 	ui->setupUi(this);
 
-	connect(ui->convertButton, &QPushButton::clicked, this, [this]()
-		{
-			ui->resultLabel->setText("Konwersja zakoñczona!");
-		});
-
 	connect(ui->urlLine, &QLineEdit::textChanged, this,
 		[this](const QString& text)
 		{
@@ -34,6 +29,13 @@ MainWindow::MainWindow(QWidget* parent)
 				ui->statusLabel->setText(QString("XML files count: %1").arg(*statusCode));
 				ui->convertButton->setEnabled(true);
 			}
+		});
+
+	connect(ui->convertButton, &QPushButton::clicked, this, [this]()
+		{
+			xmlParser.parseFolder(fileExplorer.getFolderPath());
+
+			ui->resultLabel->setText("Konwersja zakoñczona!");
 		});
 }
 
