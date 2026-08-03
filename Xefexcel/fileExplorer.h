@@ -12,7 +12,9 @@ class FileExplorer
 public:
 
 	std::optional<size_t> analyzeFolder() const;
+
 	void insertFolderPath(const std::string& folderPath);
+
 	const std::string& getFolderPath() const;
 
 private:

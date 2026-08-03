@@ -4,6 +4,7 @@
 #include <pugixml.hpp>
 #include <filesystem>
 #include <iostream>
+#include <cstdlib>
 
 class XMLParser
 {

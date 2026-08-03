@@ -4,6 +4,8 @@ namespace fs = std::filesystem;
 
 std::vector<XMLData> XMLParser::parseFolder(const std::string& folderPath)
 {
+	std::system("cls");
+
 	std::vector<XMLData> results;
 
 	XMLData data;

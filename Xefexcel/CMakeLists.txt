@@ -34,6 +34,7 @@ target_link_libraries(Xefexcel
     PRIVATE
         Qt::Core
         Qt::Widgets
+        OpenXLSX
 )
 
 install(TARGETS Xefexcel
@@ -47,4 +48,7 @@ qt_generate_deploy_app_script(
     OUTPUT_SCRIPT deploy_script
     NO_UNSUPPORTED_PLATFORM_ERROR
 )
+
+add_subdirectory(external/OpenXLSX)
+
 install(SCRIPT ${deploy_script})
