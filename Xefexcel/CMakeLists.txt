@@ -22,6 +22,14 @@ qt_add_executable(Xefexcel
     XMLData.h
 )
 
+target_sources(Xefexcel PRIVATE
+    external/pugixml/pugixml.cpp
+)
+
+target_include_directories(Xefexcel PRIVATE
+    ${CMAKE_CURRENT_SOURCE_DIR}/external/pugixml
+)
+
 target_link_libraries(Xefexcel
     PRIVATE
         Qt::Core

@@ -1,6 +1,7 @@
 #include <string>
 #include "XMLData.h"
 #include <vector>
+#include <pugixml.hpp>
 
 class XMLParser
 {
