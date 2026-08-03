@@ -25,12 +25,18 @@ std::vector<XMLData> XMLParser::parseFolder(const std::string& folderPath)
 				continue;
 			}
 
-			printNode(doc.document_element(), 0);
+			XMLData data = parseDocument(doc);
+
+			results.push_back(data);
+
+			std::cout
+				<< "[OK] "
+				<< data.invoiceNumber
+				<< " | "
+				<< data.sellerName
+				<< '\n';
 		}
 	}
-
-	results.push_back(data);
-
 	return results;
 }
 
@@ -55,4 +61,57 @@ void XMLParser::printNode(const pugi::xml_node& node, int depth) const
 	}
 }
 
+XMLData XMLParser::parseDocument(const pugi::xml_document& doc) const
+{
+	XMLData data;
 
+	const pugi::xml_node root = doc.document_element();
+
+	data.invoiceNumber =
+		root.child("Fa")
+		.child("P_2")
+		.text()
+		.as_string();
+
+	data.date =
+		root.child("Fa")
+		.child("P_1")
+		.text()
+		.as_string();
+
+	data.sellerName =
+		root.child("Podmiot1")
+		.child("DaneIdentyfikacyjne")
+		.child("Nazwa")
+		.text()
+		.as_string();
+
+	data.buyerName =
+		root.child("Podmiot2")
+		.child("DaneIdentyfikacyjne")
+		.child("Nazwa")
+		.text()
+		.as_string();
+
+	data.info =
+		root.child("Stopka")
+		.child("Informacje")
+		.child("StopkaFaktury")
+		.text()
+		.as_string();
+
+	data.vatPercent =
+		root.child("Fa")
+		.child("FaWiersz")
+		.child("P_12")
+		.text()
+		.as_string();
+
+	data.netto =
+		root.child("Fa")
+		.child("P_13_1")
+		.text()
+		.as_string();
+
+	return data;
+}

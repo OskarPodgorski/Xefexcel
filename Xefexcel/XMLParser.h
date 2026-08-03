@@ -14,4 +14,6 @@ public:
 private:
 
 	void printNode(const pugi::xml_node& node, int depth) const;
+
+	XMLData parseDocument(const pugi::xml_document& doc) const;
 };
