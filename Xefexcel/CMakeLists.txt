@@ -40,6 +40,10 @@ target_link_libraries(Xefexcel
         OpenXLSX
 )
 
+if(MSVC)
+    target_compile_options(Xefexcel PRIVATE /utf-8)
+endif()
+
 install(TARGETS Xefexcel
     BUNDLE  DESTINATION .
     RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}

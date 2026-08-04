@@ -25,23 +25,46 @@ bool ExcelExporter::exportInvoices(const std::vector<XMLData>& invoices, const s
 		worksheet.cell("B1").value() = "DATA";
 		worksheet.cell("C1").value() = "SPRZEDAWCA";
 		worksheet.cell("D1").value() = "NABYWCA";
-		worksheet.cell("E1").value() = "OPIS FAKTURY";
-		worksheet.cell("F1").value() = "NETTO";
-		worksheet.cell("G1").value() = "VAT";
-		worksheet.cell("H1").value() = "TERMIN P£ATNOåCI";
+		worksheet.cell("E1").value() = "BUDOWA";
+		worksheet.cell("F1").value() = "OPIS FAKTURY";
+		worksheet.cell("G1").value() = "STAWKA";
+		worksheet.cell("H1").value() = "NETTO";
+		worksheet.cell("I1").value() = "VAT";
+		worksheet.cell("J1").value() = "VAT KWOTA";
+		worksheet.cell("K1").value() = "BRUTTO";
+		worksheet.cell("L1").value() = "DNI";
+		worksheet.cell("M1").value() = "TERMIN P≈ÅATNO≈öCI";
+		worksheet.cell("O1").value() = "INNE";
 
-		std::uint32_t row = 2;
+		std::uint32_t row = 3;
 
 		for (const XMLData& invoice : invoices)
 		{
-			worksheet.cell(row, 1).value() = invoice.invoiceNumber;
-			worksheet.cell(row, 2).value() = invoice.date;
-			worksheet.cell(row, 3).value() = invoice.sellerName;
-			worksheet.cell(row, 4).value() = invoice.buyerName;
-			worksheet.cell(row, 5).value() = invoice.info;
-			worksheet.cell(row, 6).value() = invoice.netto;
-			worksheet.cell(row, 7).value() = invoice.vatPercent;
-			worksheet.cell(row, 8).value() = invoice.paymentDays;
+			worksheet.cell(row, 1).value() =
+				sanitizeForXml(invoice.invoiceNumber);
+
+			worksheet.cell(row, 2).value() =
+				sanitizeForXml(invoice.date);
+
+			worksheet.cell(row, 3).value() =
+				sanitizeForXml(invoice.sellerName);
+
+			worksheet.cell(row, 4).value() =
+				sanitizeForXml(invoice.buyerName);
+
+			worksheet.cell(row, 8).value() =
+				sanitizeForXml(invoice.netto);
+
+			worksheet.cell(row, 9).value() =
+				sanitizeForXml(invoice.vatPercent);
+
+			worksheet.cell(row, 12).value() =
+				sanitizeForXml(invoice.paymentDays);
+
+
+
+			worksheet.cell(row, 15).value() =
+				sanitizeForXml(invoice.info);
 
 			++row;
 		}
@@ -65,4 +88,23 @@ bool ExcelExporter::exportInvoices(const std::vector<XMLData>& invoices, const s
 
 		return false;
 	}
+}
+
+std::string ExcelExporter::sanitizeForXml(const std::string& text) const
+{
+	std::string result;
+	result.reserve(text.size());
+
+	for (const unsigned char character : text)
+	{
+		if (character >= 0x20 ||
+			character == '\t' ||
+			character == '\n' ||
+			character == '\r')
+		{
+			result.push_back(static_cast<char>(character));
+		}
+	}
+
+	return result;
 }
