@@ -5,6 +5,7 @@
 #include <filesystem>
 #include <iostream>
 #include <cstdlib>
+#include <algorithm>
 
 class XMLParser
 {

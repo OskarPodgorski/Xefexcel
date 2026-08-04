@@ -109,11 +109,29 @@ XMLData XMLParser::parseDocument(const pugi::xml_document& doc) const
 		.text()
 		.as_string();
 
+	data.vatPercent += "%";
+
 	data.netto =
 		root.child("Fa")
 		.child("P_13_1")
 		.text()
 		.as_string();
+
+	std::replace(data.netto.begin(), data.netto.end(), '.', ',');
+
+	data.netto.insert(0, "-");
+
+	data.paymentDays =
+		root.child("Fa")
+		.child("Platnosc")
+		.child("TerminPlatnosci")
+		.text()
+		.as_string();
+
+	data.paymentDays =
+		data.paymentDays.empty()
+		? "0"
+		: data.paymentDays;
 
 	return data;
 }

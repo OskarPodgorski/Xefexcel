@@ -77,6 +77,8 @@ bool ExcelExporter::exportInvoices(const std::vector<XMLData>& invoices, const s
 			<< outputPath.string()
 			<< '\n';
 
+		std::system(("start \"\" \"" + outputPath.string() + "\"").c_str());
+
 		return true;
 	}
 	catch (const std::exception& error)
