@@ -65,73 +65,180 @@ void XMLParser::printNode(const pugi::xml_node& node, int depth) const
 
 XMLData XMLParser::parseDocument(const pugi::xml_document& doc) const
 {
-	XMLData data;
+    XMLData data;
 
-	const pugi::xml_node root = doc.document_element();
+    const pugi::xml_node root = doc.document_element();
 
-	data.invoiceNumber =
-		root.child("Fa")
-		.child("P_2")
-		.text()
-		.as_string();
+    const pugi::xml_node fa =
+        childByName(root, "Fa");
 
-	data.date =
-		root.child("Fa")
-		.child("P_1")
-		.text()
-		.as_string();
+    const pugi::xml_node seller =
+        childByName(root, "Podmiot1");
 
-	data.sellerName =
-		root.child("Podmiot1")
-		.child("DaneIdentyfikacyjne")
-		.child("Nazwa")
-		.text()
-		.as_string();
+    const pugi::xml_node buyer =
+        childByName(root, "Podmiot2");
 
-	data.buyerName =
-		root.child("Podmiot2")
-		.child("DaneIdentyfikacyjne")
-		.child("Nazwa")
-		.text()
-		.as_string();
+    const pugi::xml_node sellerData =
+        childByName(seller, "DaneIdentyfikacyjne");
 
-	data.info =
-		root.child("Stopka")
-		.child("Informacje")
-		.child("StopkaFaktury")
-		.text()
-		.as_string();
+    const pugi::xml_node buyerData =
+        childByName(buyer, "DaneIdentyfikacyjne");
 
-	data.vatPercent =
-		root.child("Fa")
-		.child("FaWiersz")
-		.child("P_12")
-		.text()
-		.as_string();
+    data.invoiceNumber =
+        childByName(fa, "P_2")
+        .text()
+        .as_string();
 
-	data.vatPercent += "%";
+    data.date =
+        childByName(fa, "P_1")
+        .text()
+        .as_string();
 
-	data.netto =
-		root.child("Fa")
-		.child("P_13_1")
-		.text()
-		.as_string();
+    data.sellerName =
+        childByName(sellerData, "Nazwa")
+        .text()
+        .as_string();
 
-	std::replace(data.netto.begin(), data.netto.end(), '.', ',');
+    data.buyerName =
+        childByName(buyerData, "Nazwa")
+        .text()
+        .as_string();
 
-	data.netto.insert(0, "-");
+    int infoCount = 0;
 
-	data.paymentDays =
-		root.child("Fa")
-		.child("Platnosc")
-		.child("TerminPlatnosci")
-		.text()
-		.as_string();
+    for (const pugi::xml_node& row : fa.children())
+    {
+        std::string rowName = row.name();
 
-	data.paymentDays =
-		data.paymentDays.empty()
-		? "0"
-		: data.paymentDays;
+        const std::size_t colonPosition =
+            rowName.find(':');
 
-	return data;
+        if (colonPosition != std::string::npos)
+        {
+            rowName =
+                rowName.substr(colonPosition + 1);
+        }
+
+        if (rowName != "FaWiersz")
+        {
+            continue;
+        }
+
+        const std::string product =
+            childByName(row, "P_7")
+            .text()
+            .as_string();
+
+        if (product.empty())
+        {
+            continue;
+        }
+
+        if (!data.info.empty())
+        {
+            data.info += ", ";
+        }
+
+        data.info += product;
+
+        ++infoCount;
+
+        if (infoCount >= 3)
+        {
+            break;
+        }
+    }
+
+    const pugi::xml_node footer =
+        childByName(root, "Stopka");
+
+    const pugi::xml_node footerInfo =
+        childByName(footer, "Informacje");
+
+    data.additionalInfo =
+        childByName(footerInfo, "StopkaFaktury")
+        .text()
+        .as_string();
+
+    for (const pugi::xml_node& row : fa.children())
+    {
+        std::string rowName = row.name();
+
+        const std::size_t colonPosition =
+            rowName.find(':');
+
+        if (colonPosition != std::string::npos)
+        {
+            rowName =
+                rowName.substr(colonPosition + 1);
+        }
+
+        if (rowName == "FaWiersz")
+        {
+            data.vatPercent =
+                childByName(row, "P_12")
+                .text()
+                .as_string();
+
+            break;
+        }
+    }
+
+    if (!data.vatPercent.empty())
+    {
+        data.vatPercent += "%";
+    }
+
+    data.netto =
+        childByName(fa, "P_13_1")
+        .text()
+        .as_string();
+
+    std::replace(
+        data.netto.begin(),
+        data.netto.end(),
+        '.',
+        ',');
+
+    if (!data.netto.empty())
+    {
+        data.netto.insert(0, "-");
+    }
+
+    const pugi::xml_node payment =
+        childByName(fa, "Platnosc");
+
+    data.paymentDays =
+        childByName(payment, "TerminPlatnosci")
+        .text()
+        .as_string();
+
+    if (data.paymentDays.empty())
+    {
+        data.paymentDays = "0";
+    }
+
+    return data;
+}
+
+pugi::xml_node XMLParser::childByName(const pugi::xml_node& parent, const std::string& name) const
+{
+	for (const pugi::xml_node& child : parent.children())
+	{
+		std::string childName = child.name();
+
+		const std::size_t colonPosition = childName.find(':');
+
+		if (colonPosition != std::string::npos)
+		{
+			childName = childName.substr(colonPosition + 1);
+		}
+
+		if (childName == name)
+		{
+			return child;
+		}
+	}
+
+	return {};
 }

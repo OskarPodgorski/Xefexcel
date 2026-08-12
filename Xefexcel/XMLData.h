@@ -12,4 +12,5 @@ struct XMLData
 	std::string netto;
 	std::string vatPercent;
 	std::string paymentDays;
+	std::string additionalInfo;
 };
