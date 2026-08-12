@@ -40,6 +40,8 @@ target_link_libraries(Xefexcel
         OpenXLSX
 )
 
+target_compile_features(Xefexcel PRIVATE cxx_std_20)
+
 if(MSVC)
     target_compile_options(Xefexcel PRIVATE /utf-8)
 endif()

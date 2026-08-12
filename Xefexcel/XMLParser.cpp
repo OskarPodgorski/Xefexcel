@@ -216,14 +216,32 @@ XMLData XMLParser::parseDocument(const pugi::xml_document& doc) const
 	const pugi::xml_node payment =
 		childByName(fa, "Platnosc");
 
+	const pugi::xml_node paymentTerm =
+		childByName(payment, "TerminPlatnosci");
+
 	data.paymentDays =
-		childByName(payment, "TerminPlatnosci")
+		childByName(paymentTerm, "IloscDni")
+		.text()
+		.as_string();
+
+	data.paymentDueDate =
+		childByName(paymentTerm, "Termin")
 		.text()
 		.as_string();
 
 	if (data.paymentDays.empty())
 	{
-		data.paymentDays = "0";
+		if (!data.paymentDueDate.empty())
+		{
+			data.paymentDays =
+				calculatePaymentDays(
+					data.date,
+					data.paymentDueDate);
+		}
+		else
+		{
+			data.paymentDays = "0";
+		}
 	}
 
 	return data;
@@ -249,4 +267,59 @@ pugi::xml_node XMLParser::childByName(const pugi::xml_node& parent, const std::s
 	}
 
 	return {};
+}
+
+std::string XMLParser::calculatePaymentDays(
+	const std::string& invoiceDate,
+	const std::string& paymentDate) const
+{
+	if (invoiceDate.empty() || paymentDate.empty())
+	{
+		return "0";
+	}
+
+	int invoiceYear;
+	unsigned invoiceMonth;
+	unsigned invoiceDay;
+
+	int paymentYear;
+	unsigned paymentMonth;
+	unsigned paymentDay;
+
+	char separator1;
+	char separator2;
+
+	std::istringstream invoiceStream(invoiceDate);
+
+	invoiceStream
+		>> invoiceYear
+		>> separator1
+		>> invoiceMonth
+		>> separator2
+		>> invoiceDay;
+
+	std::istringstream paymentStream(paymentDate);
+
+	paymentStream
+		>> paymentYear
+		>> separator1
+		>> paymentMonth
+		>> separator2
+		>> paymentDay;
+
+	const std::chrono::sys_days invoice{
+		std::chrono::year{invoiceYear}
+		/ std::chrono::month{invoiceMonth}
+		/ std::chrono::day{invoiceDay}
+	};
+
+	const std::chrono::sys_days payment{
+		std::chrono::year{paymentYear}
+		/ std::chrono::month{paymentMonth}
+		/ std::chrono::day{paymentDay}
+	};
+
+	const auto difference = payment - invoice;
+
+	return std::to_string(difference.count());
 }
