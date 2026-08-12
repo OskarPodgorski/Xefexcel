@@ -111,5 +111,42 @@ std::string ExcelExporter::sanitizeForXml(const std::string& text) const
 		}
 	}
 
-	return result;
+	return toUpperPolishUtf8(result);
+}
+
+std::string ExcelExporter::toUpperPolishUtf8(std::string text) const
+{
+	const std::pair<std::string, std::string> replacements[] =
+	{
+		{"ą", "Ą"},
+		{"ć", "Ć"},
+		{"ę", "Ę"},
+		{"ł", "Ł"},
+		{"ń", "Ń"},
+		{"ó", "Ó"},
+		{"ś", "Ś"},
+		{"ź", "Ź"},
+		{"ż", "Ż"}
+	};
+
+	for (char& c : text)
+	{
+		if (c >= 'a' && c <= 'z')
+		{
+			c = static_cast<char>(c - 'a' + 'A');
+		}
+	}
+
+	for (const auto& [lower, upper] : replacements)
+	{
+		std::size_t pos = 0;
+
+		while ((pos = text.find(lower, pos)) != std::string::npos)
+		{
+			text.replace(pos, lower.size(), upper);
+			pos += upper.size();
+		}
+	}
+
+	return text;
 }

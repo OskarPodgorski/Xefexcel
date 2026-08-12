@@ -16,4 +16,5 @@ private:
 
 	std::string sanitizeForXml(const std::string& text) const;
 
+	std::string toUpperPolishUtf8(std::string text) const;
 };
