@@ -51,7 +51,7 @@
                   <property name="font">
                    <font>
                     <family>Bahnschrift SemiLight</family>
-                    <pointsize>10</pointsize>
+                    <pointsize>12</pointsize>
                    </font>
                   </property>
                   <property name="text">
@@ -63,7 +63,14 @@
                  </widget>
                 </item>
                 <item>
-                 <widget class="QLineEdit" name="urlLine"/>
+                 <widget class="QLineEdit" name="urlLine">
+                  <property name="font">
+                   <font>
+                    <family>Bahnschrift SemiLight</family>
+                    <pointsize>12</pointsize>
+                   </font>
+                  </property>
+                 </widget>
                 </item>
                </layout>
               </widget>
@@ -90,13 +97,20 @@
           <item alignment="Qt::AlignmentFlag::AlignHCenter">
            <widget class="QWidget" name="bottomWidget" native="true">
             <layout class="QVBoxLayout" name="verticalLayout_3">
-             <item>
+             <item alignment="Qt::AlignmentFlag::AlignHCenter">
               <widget class="QPushButton" name="convertButton">
                <property name="enabled">
                 <bool>false</bool>
                </property>
+               <property name="sizePolicy">
+                <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+                 <horstretch>0</horstretch>
+                 <verstretch>0</verstretch>
+                </sizepolicy>
+               </property>
                <property name="font">
                 <font>
+                 <family>Bahnschrift SemiLight</family>
                  <pointsize>16</pointsize>
                 </font>
                </property>
@@ -105,7 +119,7 @@
                </property>
               </widget>
              </item>
-             <item>
+             <item alignment="Qt::AlignmentFlag::AlignHCenter">
               <widget class="QLabel" name="resultLabel">
                <property name="font">
                 <font>
