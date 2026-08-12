@@ -52,6 +52,9 @@ bool ExcelExporter::exportInvoices(const std::vector<XMLData>& invoices, const s
 			worksheet.cell(row, 4).value() =
 				sanitizeForXml(invoice.buyerName);
 
+			worksheet.cell(row, 6).value() =
+				sanitizeForXml(invoice.info);
+
 			worksheet.cell(row, 8).value() =
 				sanitizeForXml(invoice.netto);
 
@@ -64,7 +67,7 @@ bool ExcelExporter::exportInvoices(const std::vector<XMLData>& invoices, const s
 
 
 			worksheet.cell(row, 15).value() =
-				sanitizeForXml(invoice.info);
+				sanitizeForXml(invoice.additionalInfo);
 
 			++row;
 		}

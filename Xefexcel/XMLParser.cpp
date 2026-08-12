@@ -65,160 +65,168 @@ void XMLParser::printNode(const pugi::xml_node& node, int depth) const
 
 XMLData XMLParser::parseDocument(const pugi::xml_document& doc) const
 {
-    XMLData data;
+	XMLData data;
 
-    const pugi::xml_node root = doc.document_element();
+	const pugi::xml_node root = doc.document_element();
 
-    const pugi::xml_node fa =
-        childByName(root, "Fa");
+	const pugi::xml_node fa =
+		childByName(root, "Fa");
 
-    const pugi::xml_node seller =
-        childByName(root, "Podmiot1");
+	const pugi::xml_node seller =
+		childByName(root, "Podmiot1");
 
-    const pugi::xml_node buyer =
-        childByName(root, "Podmiot2");
+	const pugi::xml_node buyer =
+		childByName(root, "Podmiot2");
 
-    const pugi::xml_node sellerData =
-        childByName(seller, "DaneIdentyfikacyjne");
+	const pugi::xml_node sellerData =
+		childByName(seller, "DaneIdentyfikacyjne");
 
-    const pugi::xml_node buyerData =
-        childByName(buyer, "DaneIdentyfikacyjne");
+	const pugi::xml_node buyerData =
+		childByName(buyer, "DaneIdentyfikacyjne");
 
-    data.invoiceNumber =
-        childByName(fa, "P_2")
-        .text()
-        .as_string();
+	data.invoiceNumber =
+		childByName(fa, "P_2")
+		.text()
+		.as_string();
 
-    data.date =
-        childByName(fa, "P_1")
-        .text()
-        .as_string();
+	data.date =
+		childByName(fa, "P_1")
+		.text()
+		.as_string();
 
-    data.sellerName =
-        childByName(sellerData, "Nazwa")
-        .text()
-        .as_string();
+	data.sellerName =
+		childByName(sellerData, "Nazwa")
+		.text()
+		.as_string();
 
-    data.buyerName =
-        childByName(buyerData, "Nazwa")
-        .text()
-        .as_string();
+	data.buyerName =
+		childByName(buyerData, "Nazwa")
+		.text()
+		.as_string();
 
-    int infoCount = 0;
+	int infoCount = 0;
 
-    for (const pugi::xml_node& row : fa.children())
-    {
-        std::string rowName = row.name();
+	for (const pugi::xml_node& row : fa.children())
+	{
+		std::string rowName = row.name();
 
-        const std::size_t colonPosition =
-            rowName.find(':');
+		const std::size_t colonPosition =
+			rowName.find(':');
 
-        if (colonPosition != std::string::npos)
-        {
-            rowName =
-                rowName.substr(colonPosition + 1);
-        }
+		if (colonPosition != std::string::npos)
+		{
+			rowName =
+				rowName.substr(colonPosition + 1);
+		}
 
-        if (rowName != "FaWiersz")
-        {
-            continue;
-        }
+		if (rowName != "FaWiersz")
+		{
+			continue;
+		}
 
-        const std::string product =
-            childByName(row, "P_7")
-            .text()
-            .as_string();
+		const std::string product =
+			childByName(row, "P_7")
+			.text()
+			.as_string();
 
-        if (product.empty())
-        {
-            continue;
-        }
+		if (product.empty())
+		{
+			continue;
+		}
 
-        if (!data.info.empty())
-        {
-            data.info += ", ";
-        }
+		if (!data.info.empty())
+		{
+			data.info += ", ";
+		}
 
-        data.info += product;
+		data.info += product;
 
-        ++infoCount;
+		++infoCount;
 
-        if (infoCount >= 3)
-        {
-            break;
-        }
-    }
+		if (infoCount >= 3)
+		{
+			break;
+		}
+	}
 
-    const pugi::xml_node footer =
-        childByName(root, "Stopka");
+	const pugi::xml_node footer =
+		childByName(root, "Stopka");
 
-    const pugi::xml_node footerInfo =
-        childByName(footer, "Informacje");
+	const pugi::xml_node footerInfo =
+		childByName(footer, "Informacje");
 
-    data.additionalInfo =
-        childByName(footerInfo, "StopkaFaktury")
-        .text()
-        .as_string();
+	data.additionalInfo =
+		childByName(footerInfo, "StopkaFaktury")
+		.text()
+		.as_string();
 
-    for (const pugi::xml_node& row : fa.children())
-    {
-        std::string rowName = row.name();
+	for (const pugi::xml_node& row : fa.children())
+	{
+		std::string rowName = row.name();
 
-        const std::size_t colonPosition =
-            rowName.find(':');
+		const std::size_t colonPosition =
+			rowName.find(':');
 
-        if (colonPosition != std::string::npos)
-        {
-            rowName =
-                rowName.substr(colonPosition + 1);
-        }
+		if (colonPosition != std::string::npos)
+		{
+			rowName =
+				rowName.substr(colonPosition + 1);
+		}
 
-        if (rowName == "FaWiersz")
-        {
-            data.vatPercent =
-                childByName(row, "P_12")
-                .text()
-                .as_string();
+		if (rowName == "FaWiersz")
+		{
+			data.vatPercent =
+				childByName(row, "P_12")
+				.text()
+				.as_string();
 
-            break;
-        }
-    }
+			break;
+		}
+	}
 
-    if (!data.vatPercent.empty())
-    {
-        data.vatPercent += "%";
-    }
+	if (!data.vatPercent.empty())
+	{
+		data.vatPercent += "%";
+	}
 
-    data.netto =
-        childByName(fa, "P_13_1")
-        .text()
-        .as_string();
+	data.netto =
+		childByName(fa, "P_13_1")
+		.text()
+		.as_string();
 
-    std::replace(
-        data.netto.begin(),
-        data.netto.end(),
-        '.',
-        ',');
+	if (data.netto.empty())
+	{
+		data.netto =
+			childByName(fa, "P_13_2")
+			.text()
+			.as_string();
+	}
 
-    if (!data.netto.empty())
-    {
-        data.netto.insert(0, "-");
-    }
+	std::replace(
+		data.netto.begin(),
+		data.netto.end(),
+		'.',
+		',');
 
-    const pugi::xml_node payment =
-        childByName(fa, "Platnosc");
+	if (!data.netto.empty())
+	{
+		data.netto.insert(0, "-");
+	}
 
-    data.paymentDays =
-        childByName(payment, "TerminPlatnosci")
-        .text()
-        .as_string();
+	const pugi::xml_node payment =
+		childByName(fa, "Platnosc");
 
-    if (data.paymentDays.empty())
-    {
-        data.paymentDays = "0";
-    }
+	data.paymentDays =
+		childByName(payment, "TerminPlatnosci")
+		.text()
+		.as_string();
 
-    return data;
+	if (data.paymentDays.empty())
+	{
+		data.paymentDays = "0";
+	}
+
+	return data;
 }
 
 pugi::xml_node XMLParser::childByName(const pugi::xml_node& parent, const std::string& name) const
