@@ -7,6 +7,8 @@
 #include <optional>
 #include "XMLParser.h"
 #include "excelExporter.h"
+#include <QDragEnterEvent>
+#include <QDropEvent>
 
 QT_BEGIN_NAMESPACE
 namespace Ui {
@@ -19,13 +21,21 @@ class MainWindow : public QMainWindow
 	Q_OBJECT
 
 public:
+
 	explicit MainWindow(QWidget* parent = nullptr);
 	~MainWindow() override;
 
 private:
+
 	Ui::MainWindow* ui;
 	FileExplorer fileExplorer;
 	XMLParser xmlParser;
 	ExcelExporter excelExporter;
+
+protected:
+
+	void dragEnterEvent(QDragEnterEvent* event) override;
+	void dropEvent(QDropEvent* event) override;
+
 };
 #endif // MAINWINDOW_H

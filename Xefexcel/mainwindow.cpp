@@ -1,11 +1,15 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
+#include <QMimeData>
+#include <QUrl>
 
 MainWindow::MainWindow(QWidget* parent)
 	: QMainWindow(parent)
 	, ui(new Ui::MainWindow)
 {
 	ui->setupUi(this);
+
+	setAcceptDrops(true);
 
 	connect(ui->urlLine, &QLineEdit::textChanged, this,
 		[this](const QString& text)
@@ -53,4 +57,26 @@ MainWindow::MainWindow(QWidget* parent)
 MainWindow::~MainWindow()
 {
 	delete ui;
+}
+
+void MainWindow::dragEnterEvent(QDragEnterEvent* event)
+{
+	if (event->mimeData()->hasUrls())
+	{
+		event->acceptProposedAction();
+	}
+}
+
+void MainWindow::dropEvent(QDropEvent* event)
+{
+	const QList<QUrl> urls = event->mimeData()->urls();
+
+	if (urls.isEmpty())
+	{
+		return;
+	}
+
+	const QString path = urls.first().toLocalFile();
+
+	ui->urlLine->setText(path);
 }
