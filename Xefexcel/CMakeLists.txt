@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.19)
-project(Xefexcel LANGUAGES CXX)
+project(Xefexcel LANGUAGES C CXX)
 
 list(APPEND CMAKE_PREFIX_PATH "C:/Qt/6.9.3/msvc2022_64")
 
@@ -27,10 +27,12 @@ qt_add_executable(Xefexcel
 
 target_sources(Xefexcel PRIVATE
     external/pugixml/pugixml.cpp
+    external/miniz/miniz.c
 )
 
 target_include_directories(Xefexcel PRIVATE
     ${CMAKE_CURRENT_SOURCE_DIR}/external/pugixml
+    ${CMAKE_CURRENT_SOURCE_DIR}/external/miniz
 )
 
 target_link_libraries(Xefexcel
