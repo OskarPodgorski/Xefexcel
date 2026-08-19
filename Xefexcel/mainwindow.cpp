@@ -25,12 +25,12 @@ MainWindow::MainWindow(QWidget* parent)
 			}
 			else if (statusCode == 0)
 			{
-				ui->statusLabel->setText(QString("No XML files in folder"));
+				ui->statusLabel->setText(QString("No XML/ZIP files in folder"));
 				ui->convertButton->setEnabled(false);
 			}
 			else
 			{
-				ui->statusLabel->setText(QString("XML files count: %1").arg(*statusCode));
+				ui->statusLabel->setText(QString("XML/ZIP files count: %1").arg(*statusCode));
 				ui->convertButton->setEnabled(true);
 			}
 		});

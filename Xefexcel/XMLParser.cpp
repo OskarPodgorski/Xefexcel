@@ -1,46 +1,108 @@
 #include "XMLParser.h"
 
-namespace fs = std::filesystem;
-
 std::vector<XMLData> XMLParser::parseFolder(const std::string& folderPath)
 {
 	std::system("cls");
 
 	std::vector<XMLData> results;
 
-	XMLData data;
-
-	fs::path path(folderPath);
+	const fs::path path(folderPath);
 
 	for (const fs::directory_entry& entry : fs::directory_iterator(path))
 	{
-		if (entry.is_regular_file() && entry.path().extension() == ".xml")
+		if (!entry.is_regular_file())
+		{
+			continue;
+		}
+
+		const fs::path extension = entry.path().extension();
+
+		if (extension == ".xml")
 		{
 			pugi::xml_document doc;
 
-			pugi::xml_parse_result result = doc.load_file(entry.path().c_str());
+			const pugi::xml_parse_result result =
+				doc.load_file(entry.path().c_str());
 
 			if (!result)
 			{
-				std::cout << "Nie udalo sie odczytac XML\n";
+				std::cout
+					<< "[ERROR] Nie udalo sie odczytac XML\n";
 
 				continue;
 			}
 
-			XMLData data = parseDocument(doc);
-
-			results.push_back(data);
-
-			std::cout
-				<< "[OK] "
-				<< data.invoiceNumber
-				<< " | "
-				<< data.sellerName
-				<< '\n';
+			results.push_back(parseDocument(doc));
+		}
+		else if (extension == ".zip")
+		{
+			parseZIP(entry.path(), results);
 		}
 	}
+
 	return results;
 }
+
+void XMLParser::parseZIP(const fs::path& zipPath, std::vector<XMLData>& results) const
+{
+	mz_zip_archive zip{};
+
+	if (!mz_zip_reader_init_file(
+		&zip,
+		zipPath.string().c_str(),
+		0))
+	{
+		std::cout
+			<< "[ERROR] Nie udalo sie otworzyc ZIP: "
+			<< zipPath.filename().string()
+			<< '\n';
+
+		return;
+	}
+
+	const mz_uint fileCount =
+		mz_zip_reader_get_num_files(&zip);
+
+	std::cout
+		<< "[ZIP] "
+		<< zipPath.filename().string()
+		<< " | plikow: "
+		<< fileCount
+		<< '\n';
+
+	for (mz_uint i = 0; i < fileCount; ++i)
+	{
+		mz_zip_archive_file_stat fileStat{};
+
+		if (!mz_zip_reader_file_stat(
+			&zip,
+			i,
+			&fileStat))
+		{
+			continue;
+		}
+
+		if (mz_zip_reader_is_file_a_directory(&zip, i))
+		{
+			continue;
+		}
+
+		const fs::path filePath{ fileStat.m_filename };
+
+		if (filePath.extension() != ".xml")
+		{
+			continue;
+		}
+
+		std::cout
+			<< "[ZIP XML] "
+			<< fileStat.m_filename
+			<< '\n';
+	}
+
+	mz_zip_reader_end(&zip);
+}
+
 
 void XMLParser::printNode(const pugi::xml_node& node, int depth) const
 {

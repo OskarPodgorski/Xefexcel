@@ -8,6 +8,9 @@
 #include <algorithm>
 #include <chrono>
 #include <sstream>
+#include <miniz.h>
+
+namespace fs = std::filesystem;
 
 class XMLParser
 {
@@ -20,6 +23,8 @@ private:
 	void printNode(const pugi::xml_node& node, int depth) const;
 
 	XMLData parseDocument(const pugi::xml_document& doc) const;
+
+	void parseZIP(const fs::path& zipPath, std::vector<XMLData>& results) const;
 
 	pugi::xml_node childByName(const pugi::xml_node& parent, const std::string& name) const;
 

@@ -29,7 +29,7 @@ std::optional<size_t> FileExplorer::analyzeFolder() const
 		return std::nullopt;
 	}
 
-	int xmlCount = 0;
+	int filesCount = 0;
 
 	for (const fs::directory_entry& entry : fs::directory_iterator(path))
 	{
@@ -39,12 +39,14 @@ std::optional<size_t> FileExplorer::analyzeFolder() const
 				<< entry.path().filename().string()
 				<< '\n';
 
-			if (entry.path().extension() == ".xml")
+			std::filesystem::path extension = entry.path().extension();
+
+			if (extension == ".xml" || extension == ".zip")
 			{
-				++xmlCount;
+				++filesCount;
 			}
 		}
 	}
 
-	return xmlCount;
+	return filesCount;
 }
