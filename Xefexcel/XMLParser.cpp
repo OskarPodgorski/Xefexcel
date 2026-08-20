@@ -285,6 +285,12 @@ XMLData XMLParser::parseDocument(const pugi::xml_document& doc) const
 				.text()
 				.as_string();
 
+			if (data.vatPercent == "zw" ||
+				data.vatPercent == "ZW")
+			{
+				data.vatPercent = "0";
+			}
+
 			break;
 		}
 	}
@@ -303,6 +309,14 @@ XMLData XMLParser::parseDocument(const pugi::xml_document& doc) const
 	{
 		data.netto =
 			childByName(fa, "P_13_2")
+			.text()
+			.as_string();
+	}
+
+	if (data.netto.empty())
+	{
+		data.netto =
+			childByName(fa, "P_13_7")
 			.text()
 			.as_string();
 	}
