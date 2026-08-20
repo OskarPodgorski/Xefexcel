@@ -94,10 +94,53 @@ void XMLParser::parseZIP(const fs::path& zipPath, std::vector<XMLData>& results)
 			continue;
 		}
 
+		size_t xmlSize = 0;
+
+		void* xmlBuffer =
+			mz_zip_reader_extract_to_heap(
+				&zip,
+				i,
+				&xmlSize,
+				0);
+
+		if (xmlBuffer == nullptr)
+		{
+			std::cout
+				<< "[ERROR] Nie udalo sie odczytac XML z ZIP: "
+				<< fileStat.m_filename
+				<< '\n';
+
+			continue;
+		}
+
+		pugi::xml_document doc;
+
+		const pugi::xml_parse_result parseResult =
+			doc.load_buffer(xmlBuffer, xmlSize);
+
+		if (!parseResult)
+		{
+			std::cout
+				<< "[ERROR] Nie udalo sie sparsowac XML z ZIP: "
+				<< fileStat.m_filename
+				<< '\n';
+
+			mz_free(xmlBuffer);
+			continue;
+		}
+
+		XMLData data = parseDocument(doc);
+
+		results.push_back(data);
+
 		std::cout
-			<< "[ZIP XML] "
-			<< fileStat.m_filename
+			<< "[OK ZIP] "
+			<< data.invoiceNumber
+			<< " | "
+			<< data.sellerName
 			<< '\n';
+
+		mz_free(xmlBuffer);
 	}
 
 	mz_zip_reader_end(&zip);
