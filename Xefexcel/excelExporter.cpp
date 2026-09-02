@@ -55,16 +55,29 @@ bool ExcelExporter::exportInvoices(const std::vector<XMLData>& invoices, const s
 			worksheet.cell(row, 6).value() =
 				sanitizeForXml(invoice.info);
 
+			//
+
+			std::string nettoText = invoice.netto;
+
+			std::replace(
+				nettoText.begin(),
+				nettoText.end(),
+				',',
+				'.'
+			);
+
 			worksheet.cell(row, 8).value() =
-				sanitizeForXml(invoice.netto);
+				std::stod(nettoText);
+
 
 			worksheet.cell(row, 9).value() =
-				sanitizeForXml(invoice.vatPercent);
+				std::stoi(invoice.vatPercent) / 100.0;
+
 
 			worksheet.cell(row, 12).value() =
-				sanitizeForXml(invoice.paymentDays);
+				std::stoi(invoice.paymentDays);
 
-
+			//
 
 			worksheet.cell(row, 15).value() =
 				sanitizeForXml(invoice.additionalInfo);
