@@ -57,25 +57,44 @@ bool ExcelExporter::exportInvoices(const std::vector<XMLData>& invoices, const s
 
 			//
 
-			std::string nettoText = invoice.netto;
+			if (!invoice.netto.empty())
+			{
+				std::string nettoText = invoice.netto;
 
-			std::replace(
-				nettoText.begin(),
-				nettoText.end(),
-				',',
-				'.'
-			);
+				std::replace(
+					nettoText.begin(),
+					nettoText.end(),
+					',',
+					'.'
+				);
 
-			worksheet.cell(row, 8).value() =
-				std::stod(nettoText);
+				worksheet.cell(row, 8).value() =
+					std::stod(nettoText);
+			}
+			else
+			{
+				worksheet.cell(row, 8).value() = 0.0;
+			}
 
+			if (!invoice.vatPercent.empty())
+			{
+				worksheet.cell(row, 9).value() =
+					std::stod(invoice.vatPercent) / 100.0;
+			}
+			else
+			{
+				worksheet.cell(row, 9).value() = 0.0;
+			}
 
-			worksheet.cell(row, 9).value() =
-				std::stoi(invoice.vatPercent) / 100.0;
-
-
-			worksheet.cell(row, 12).value() =
-				std::stoi(invoice.paymentDays);
+			if (!invoice.paymentDays.empty())
+			{
+				worksheet.cell(row, 12).value() =
+					std::stoi(invoice.paymentDays);
+			}
+			else
+			{
+				worksheet.cell(row, 12).value() = 30;
+			}
 
 			//
 
